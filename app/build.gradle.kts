@@ -86,4 +86,7 @@ dependencies {
 
     // Kotlin Extensions and Coroutines support for Room
     implementation ("androidx.room:room-ktx:2.5.2")
+
+    implementation ("me.saket.cascade:cascade:2.2.0")
+    implementation ("me.saket.cascade:cascade-compose:2.2.0")
 }

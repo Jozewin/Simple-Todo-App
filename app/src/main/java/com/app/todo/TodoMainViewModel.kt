@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -15,9 +16,14 @@ class TodoMainViewModel(
 
 
 
-        private val _state = MutableStateFlow(TodoState())
-        val state = _state.stateIn(viewModelScope, SharingStarted.Lazily, TodoState())
-
+    private val _todoList = MutableStateFlow(dao.showAllTodos())
+    private val _state = MutableStateFlow(TodoState())
+    val state = combine(_state, _todoList){
+            state, todoList ->
+        state.copy(
+            todos = todoList
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TodoState())
 
     fun onEvent(event : TodoEvents){
         when(event){

@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
             context = applicationContext,
             TodoDatabase::class.java,
             "todo.db"
-        ).build()
+        ).allowMainThreadQueries().build()
     }
 
     private val viewModel by viewModels<TodoMainViewModel>(
