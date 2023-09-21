@@ -42,12 +42,12 @@ class TodoMainViewModel(
                     )
                 }
             }
-            is TodoEvents.deleteTodo -> {
+            is TodoEvents.DeleteTodo -> {
                 viewModelScope.launch {
                     dao.deleteTodoList(event.todo)
                 }
             }
-            TodoEvents.saveTodo -> {
+            TodoEvents.SaveTodo -> {
                 val title = state.value.title
                 val description = state.value.description
 
@@ -69,14 +69,14 @@ class TodoMainViewModel(
                     )
                 }
             }
-            TodoEvents.hideDialog -> {
+            TodoEvents.HideDialog -> {
                 _state.update {
                     it.copy(
                         isAddingTodo = false
                     )
                 }
             }
-            TodoEvents.showDialog -> {
+            TodoEvents.ShowDialog -> {
                 _state.update {
                     it.copy(
                         isAddingTodo = true

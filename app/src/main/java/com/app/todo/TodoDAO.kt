@@ -16,6 +16,6 @@ interface TodoDAO {
     @Delete
     suspend fun deleteTodoList(todo : TodoData)
 
-    @Query("SELECT * FROM todo")
+    @Query("SELECT * FROM todo ORDER BY id")
     fun showAllTodos(): List<TodoData>
 }
