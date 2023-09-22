@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val state by viewModel.state.collectAsState()
+                    val state by viewModel.state
                     TodoScreen(state = state, onEvents = viewModel::onEvent)
                 }
             }

@@ -1,5 +1,7 @@
 package com.app.todo
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,31 +18,36 @@ class TodoMainViewModel(
 
 
 
-    private val _todoList = MutableStateFlow(dao.showAllTodos())
-    private val _state = MutableStateFlow(TodoState())
-    val state = combine(_state, _todoList){
-            state, todoList ->
-        state.copy(
-            todos = todoList
+    private val _state = mutableStateOf(TodoState())
+    val state : State<TodoState> = _state
+
+
+    private fun getAllTodos(){
+        var savedTodos = emptyList<TodoData>()
+         viewModelScope.launch {
+             savedTodos = dao.showAllTodos()
+         }
+
+        _state.value = state.value.copy(
+            title = "",
+            description = "",
+            isAddingTodo = false,
+            todos = state.value.todos + savedTodos
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TodoState())
+    }
 
     fun onEvent(event : TodoEvents){
         when(event){
             is TodoEvents.SetDescription -> {
-                _state.update {
-                    it.copy(
-                        description = event.setDescription
-                    )
-                }
+                _state.value = state.value.copy(
+                    description = event.setDescription
+                )
             }
 
             is TodoEvents.SetTitle -> {
-                _state.update {
-                    it.copy(
-                        title = event.setTitle
-                    )
-                }
+                _state.value = state.value.copy(
+                    title = event.setTitle
+                )
             }
             is TodoEvents.DeleteTodo -> {
                 viewModelScope.launch {
@@ -61,27 +68,24 @@ class TodoMainViewModel(
                     dao.updateTodoList(todo)
                 }
 
-                _state.update {
-                    it.copy(
-                        title = "",
-                        description = "",
-                        isAddingTodo = false
-                    )
-                }
+                _state.value = state.value.copy(
+                    title = "",
+                    description = "",
+                    isAddingTodo = false,
+                    todos = state.value.todos + todo
+                )
             }
             TodoEvents.HideDialog -> {
-                _state.update {
-                    it.copy(
-                        isAddingTodo = false
-                    )
-                }
+                _state.value = state.value.copy(
+                    isAddingTodo = false
+
+                )
             }
-            TodoEvents.ShowDialog -> {
-                _state.update {
-                    it.copy(
-                        isAddingTodo = true
-                    )
-                }
+            TodoEvents.ShowDialog ->  {
+                _state.value = state.value.copy(
+                    isAddingTodo = true
+
+                )
             }
         }
     }
