@@ -83,7 +83,6 @@ fun TodoScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTodoDialog(
     state: TodoState,

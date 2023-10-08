@@ -25,23 +25,18 @@ class TodoMainViewModel(
         Log.d("Main", "The list ${state.value.todos}")
     }
 
-
     fun onEvent(event : TodoEvents){
         when(event){
             is TodoEvents.SetDescription -> {
-                _state.update {
-                    it.copy(
-                        description = event.setDescription
-                    )
-                }
+                _state.value = state.value.copy(
+                    description = event.setDescription
+                )
             }
 
             is TodoEvents.SetTitle -> {
-                _state.update {
-                    it.copy(
-                        title = event.setTitle
-                    )
-                }
+                _state.value = state.value.copy(
+                    title = event.setTitle
+                )
             }
             is TodoEvents.DeleteTodo -> {
                 viewModelScope.launch {
@@ -61,7 +56,6 @@ class TodoMainViewModel(
                 viewModelScope.launch {
                     dao.updateTodoList(todo)
                 }
-
                 _state.update {
                     it.copy(
                         title = "",
@@ -85,6 +79,18 @@ class TodoMainViewModel(
                         isAddingTodo = true
                     )
                 }
+            }
+            TodoEvents.HideDialog -> {
+                _state.value = state.value.copy(
+                    isAddingTodo = false
+
+                )
+            }
+            TodoEvents.ShowDialog ->  {
+                _state.value = state.value.copy(
+                    isAddingTodo = true
+
+                )
             }
 
             is TodoEvents.UpdateTodoChecked -> {
