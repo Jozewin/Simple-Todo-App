@@ -1,17 +1,9 @@
 package com.app.todo
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -51,12 +43,12 @@ class TodoMainViewModel(
                     )
                 }
             }
-            is TodoEvents.deleteTodo -> {
+            is TodoEvents.DeleteTodo -> {
                 viewModelScope.launch {
                     dao.deleteTodoList(event.todo)
                 }
             }
-            TodoEvents.saveTodo -> {
+            TodoEvents.SaveTodo -> {
                 val title = state.value.title
                 val description = state.value.description
 
@@ -80,14 +72,14 @@ class TodoMainViewModel(
                 Log.d("Main", "The list ${state.value.todos}")
 
             }
-            TodoEvents.hideDialog -> {
+            TodoEvents.HideDialog -> {
                 _state.update {
                     it.copy(
                         isAddingTodo = false
                     )
                 }
             }
-            TodoEvents.showDialog -> {
+            TodoEvents.ShowDialog -> {
                 _state.update {
                     it.copy(
                         isAddingTodo = true

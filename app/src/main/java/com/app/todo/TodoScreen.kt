@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoScreen(
     state: TodoState,
@@ -39,7 +38,7 @@ fun TodoScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEvents(TodoEvents.showDialog)
+                    onEvents(TodoEvents.ShowDialog)
                 }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Todo")
@@ -92,10 +91,10 @@ fun AddTodoDialog(
 ) {
     AlertDialog(
         onDismissRequest = {
-            onEvents(TodoEvents.hideDialog)
+            onEvents(TodoEvents.HideDialog)
         },
         confirmButton = {
-            onEvents(TodoEvents.showDialog)
+            onEvents(TodoEvents.ShowDialog)
         },
 
         title = {
@@ -134,7 +133,7 @@ fun AddTodoDialog(
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Button(
                         onClick = {
-                            onEvents(TodoEvents.saveTodo)
+                            onEvents(TodoEvents.SaveTodo)
                         },
                         modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
