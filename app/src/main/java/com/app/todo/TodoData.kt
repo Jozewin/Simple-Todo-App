@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class TodoData(
     val title: String,
     val description : String,
+    val isChecked : Boolean = false,
     @PrimaryKey(autoGenerate = true)
     val id : Int = 0
 )

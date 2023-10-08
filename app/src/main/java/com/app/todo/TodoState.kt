@@ -5,6 +5,7 @@ data class TodoState(
     val description : String = "",
 
     val isAddingTodo : Boolean = false,
+    val isChecked : Boolean = false,
 
     val todos : List<TodoData> = emptyList()
 )

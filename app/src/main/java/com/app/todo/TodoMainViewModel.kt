@@ -1,9 +1,14 @@
 package com.app.todo
 
+import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 
 import kotlinx.coroutines.flow.stateIn
@@ -14,16 +19,20 @@ class TodoMainViewModel(
     private val dao : TodoDAO
 ) : ViewModel() {
 
-
-
-    private val _todoList = MutableStateFlow(dao.showAllTodos())
     private val _state = MutableStateFlow(TodoState())
-    val state = combine(_state, _todoList){
-            state, todoList ->
-        state.copy(
-            todos = todoList
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TodoState())
+    val state = _state
+
+    init {
+        viewModelScope.launch {
+            dao.showAllTodos().collect{
+                _state.value = state.value.copy(
+                    todos = it
+                )
+            }
+        }
+        Log.d("Main", "The list ${state.value.todos}")
+    }
+
 
     fun onEvent(event : TodoEvents){
         when(event){
@@ -68,6 +77,8 @@ class TodoMainViewModel(
                         isAddingTodo = false
                     )
                 }
+                Log.d("Main", "The list ${state.value.todos}")
+
             }
             TodoEvents.hideDialog -> {
                 _state.update {
@@ -82,6 +93,20 @@ class TodoMainViewModel(
                         isAddingTodo = true
                     )
                 }
+            }
+
+            is TodoEvents.UpdateTodoChecked -> {
+                Log.d("Main", "The list in checkBox ${state.value.todos}")
+
+                val todoChanged = event.todoDataIsChecked.copy(
+                    isChecked = event.isFinished
+                )
+
+                viewModelScope.launch {
+                    dao.updateTodoList(todoChanged)
+                }
+                Log.d("Main", "The list in after checkBox ${state.value.todos}")
+
             }
         }
     }
